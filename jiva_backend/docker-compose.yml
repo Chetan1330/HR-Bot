@@ -1,0 +1,84 @@
+version: "3.9"
+
+services:
+  # rasa:
+  #   image: rasa/rasa:3.2.1-full
+  #   ports:
+  #     - 5005:5005
+  #   volumes:
+  #     - ./:/app
+  #   command:
+  #     - run
+  #     - --enable-api
+  #     - --cors
+  #     - "*"
+  # app:
+  #   build: .
+  #   expose: [5055]
+
+  web:
+    build: .
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - ./:/app
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    # profiles:
+    #   - web
+    #   - all
+  #  pgadmin:
+  #    image: dpage/pgadmin4:latest
+  #    env_file:
+  #      - .env
+  #    profiles:
+  #      - dev
+  #    ports:
+  #      - 5050:80
+    #  depends_on:
+    #    - db
+  db:
+    image: postgres:15
+    volumes:
+      - postgres-data-dev:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=hello_django
+      - POSTGRES_PASSWORD=hello_django
+      - POSTGRES_DB=hello_django_dev
+#   rasa-server:
+#     build:
+#       context: ./rasa-server
+#       target: run-rasa-server
+#       args:
+#         RETRAIN: 0
+#     profiles:
+#       - rasa
+#       - all
+#     env_file:
+#       - .env
+#     ports:
+#       - 5005:5005
+#   rasa-actions:
+#     build: ./rasa-actions
+#     profiles:
+#       - rasa
+#       - all
+#     #    ports:
+#     #      - 5055:5055
+#     env_file:
+#       - .env
+#     expose: [5055]
+
+volumes:
+  postgres-data-dev:

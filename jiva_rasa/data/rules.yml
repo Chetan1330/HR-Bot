@@ -1,0 +1,69 @@
+version: "3.1"
+
+rules:
+  - rule: Profile link
+    steps:
+      - intent: profile_link
+      - action: utter_profile_link
+  - rule: Create Account
+    steps:
+      - intent: create_account
+      - action: action_create_account
+  - rule: Resend OTP
+    steps:
+      - intent: resend_otp
+      - action: action_submit_onboarding_form
+  - rule: Change Email
+    steps:
+      - intent: change_email
+      - action: action_change_email
+
+  - rule: Say goodbye anytime the user says goodbye
+    steps:
+      - intent: goodbye
+      - action: utter_goodbye
+
+  - rule: Say 'I am a bot' anytime the user challenges
+    steps:
+      - intent: bot_challenge
+      - action: utter_iamabot
+
+  - rule: Activate Email form
+    steps:
+      - intent: create_profile
+      - action: onboarding_form
+      - active_loop: onboarding_form
+
+  - rule: Submit form
+    condition:
+      # Condition that form is active.
+      - active_loop: onboarding_form
+    steps:
+      # Form is deactivated
+      - action: onboarding_form
+      - active_loop: null
+      - slot_was_set:
+          - requested_slot: null
+      # The actions we want to run when the form is submitted.
+      # - action: utter_submit
+      - action: action_submit_onboarding_form
+
+  - rule: Activate Verify OTP form
+    steps:
+      - intent: verify_otp
+      - action: verify_otp_form
+      - active_loop: verify_otp_form
+
+  - rule: Submit form
+    condition:
+      # Condition that form is active.
+      - active_loop: verify_otp_form
+    steps:
+      # Form is deactivated
+      - action: verify_otp_form
+      - active_loop: null
+      - slot_was_set:
+          - requested_slot: null
+      # The actions we want to run when the form is submitted.
+      # - action: utter_submit
+      - action: action_submit_verify_otp_form

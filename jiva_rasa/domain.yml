@@ -1,0 +1,149 @@
+version: "3.1"
+
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - mood_great
+  - mood_unhappy
+  - bot_challenge
+  - profile_link
+  - create_profile
+  - verify_otp
+  - resend_otp
+  - change_email
+  - create_account
+entities:
+  - email
+  - email_otp
+  - firstname
+  - othernames
+  - phonenumber
+  - experience
+  - skills
+  - videolink
+actions:
+  - validate_onboarding_form
+  - action_submit_onboarding_form
+  - action_submit_verify_otp_form
+  - action_change_email
+  - action_create_account
+
+slots:
+  videolink:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: videolink
+  skills:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: skills
+  experience:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: experience
+  phonenumber:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: phonenumber
+  firstname:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: firstname
+  othernames:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: othernames
+  email:
+    type: text
+    mappings:
+      - type: from_text
+        conditions:
+          - active_loop: onboarding_form
+            requested_slot: email
+  generated_otp:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: custom
+
+  email_otp:
+    type: text
+    mappings:
+      - type: from_text
+        conditions:
+          - active_loop: verify_otp_form
+            requested_slot: email_otp
+
+forms:
+  onboarding_form:
+    required_slots:
+      - email
+  verify_otp_form:
+    required_slots:
+      - email_otp
+      # - email_otp
+
+responses:
+  utter_slots_values:
+    - text: "Hey! {email}  {email_otp}"
+  utter_greet:
+    - text: "Hey! How are you?"
+  utter_create_profile:
+    - text: "Create Profile"
+  utter_profile_link:
+    - text: "Profile Link"
+  utter_ask_email_otp:
+    - text: "Enter OTP send to your email?"
+  utter_ask_email:
+    - text: "Enter your email address"
+
+  utter_ask_video_link:
+    - text: "Please record a video"
+
+  utter_cheer_up:
+    - text: "Here is something to cheer you up:"
+      image: "https://i.imgur.com/nGF1K8f.jpg"
+
+  utter_did_that_help:
+    - text: "Did that help you?"
+
+  utter_happy:
+    - text: "Great, carry on!"
+
+  utter_goodbye:
+    - text: "Bye"
+
+  utter_iamabot:
+    - text: "I am a bot, powered by Rasa."
+  utter_get_started:
+    - text: "Hi, Welcome to hiring bot, Please choose action"
+      buttons:
+        - title: "Get profile link"
+          payload: "/profile_link"
+        - title: "Create Profile"
+          payload: "/create_profile"
+  utter_wrong_otp:
+    - text: "Wrong OTP"
+      buttons:
+        - title: "Change Email"
+          payload: "/change_email"
+        - title: "Resend OTP"
+          payload: "/resend_otp"
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
